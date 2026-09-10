@@ -1,0 +1,24 @@
+# The @argszero/cordis-plugin-search-budget bundle patch: no deployment-specific
+# config is needed to mount. Defaults bound ONE whole subagent tree to 60
+# estimated billable search requests and one call to 10.
+#
+# Tune via a profile layer:
+#
+#   - set:
+#       - id: search-budget
+#         config:
+#           queriesPerRequest: 5   # provider maxUses (server-side searches per query)
+#           perCall: 10            # requests a single web_search call may initiate
+#           perTurn: 0             # requests one turn may initiate (0 = off)
+#           perSession: 0          # requests one session may initiate (0 = off)
+#           perTree: 60            # requests a session + all its subagents may initiate
+#           enforce: true          # false = observe-only (log, never deny)
+#
+# `queriesPerRequest` is the provider's `maxUses` (dsh-web-search-deepseek
+# default 5). Set it to 1 for a provider that issues exactly one request per
+# query. Every budget is an ESTIMATE: it bounds admission before the call runs,
+# which is what makes the gate total and cheap.
+
+- insert:
+    - id: search-budget
+      name: '@argszero/cordis-plugin-search-budget'
