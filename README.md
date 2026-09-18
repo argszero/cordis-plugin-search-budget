@@ -127,19 +127,36 @@ The bundle patch mounts the plugin with its defaults:
 
 Built and typechecked against dsh `0.1.5-rc.1` / `@deepseek-ai/cordis` `4.0.2`. The
 harness packages are **type-only** imports, so the plugin has no runtime dependency
-on them — it declares only `cordis` as a peer.
+on them — it declares only `cordis` as a peer, and no dsh version range at all, so
+there is nothing for npm to refuse on a different line.
+
+**0.1.1 fixed a packaging defect that made the artifact unloadable outside the
+author's tree.** `src/index.ts` imports `@deepseek-ai/schemastery` for value, but
+0.1.0 declared no `dependencies` block: the library resolved only because this
+repo's own `node_modules` had it hoisted off a sibling devDependency. A consumer
+installing into a tree that does not happen to provide it got, at mount time:
+
+```
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@deepseek-ai/schemastery'
+imported from .../node_modules/@argszero/cordis-plugin-search-budget/lib/index.js
+```
+
+`schemastery` is now a declared dependency, and `test/packaging.test.js` fails if
+any value import in the source is missing from `dependencies`/`peerDependencies` —
+a dependency that only resolves in the author's tree is not a declared one.
 
 ## Tests
 
 ```sh
-npm test     # tsc + node --test test/*.test.js   (32 tests)
+npm test     # tsc + node --test test/*.test.js   (35 tests)
 ```
 
 The suite covers query estimation (including the exact-duplicate collapsing and the
 blank/non-string handling that `tool-web` itself performs), lineage resolution
 (including a cyclic-lineage guard and a dead-ancestor stop), turn detection, the
 cost model, admission and charging per scope, release-on-dispose, the denial text,
-and a replay of the #6106 fan-out shape against the shipped defaults.
+a replay of the #6106 fan-out shape against the shipped defaults, and the
+packaging contract (every runtime import is declared in the manifest).
 
 ## License
 

@@ -1,7 +1,7 @@
 {
   "name": "@argszero/cordis-plugin-search-budget",
-  "description": "Cost budget for dsh web_search: bounds the number of billable provider search requests a `web_search` call may initiate (per call / per turn / per session / whole subagent tree) and denies the call with an actionable error once the budget is exhausted. Exists because `tool-web.searchMaxQueries` bounds only the model-supplied query array while `web-search-deepseek.maxUses` bounds only the server-side searches inside one request — the product of the two per query, plus unbounded subagent fan-out, is what makes a single session issue hundreds of billable requests. Compatible with dsh 0.1.5-alpha.1+.",
-  "version": "0.1.0",
+  "description": "Cost budget for dsh web_search: bounds the number of billable provider search requests a `web_search` call may initiate (per call / per turn / per session / whole subagent tree) and denies the call with an actionable error once the budget is exhausted. Exists because `tool-web.searchMaxQueries` bounds only the model-supplied query array while `web-search-deepseek.maxUses` bounds only the server-side searches inside one request \u2014 the product of the two per query, plus unbounded subagent fan-out, is what makes a single session issue hundreds of billable requests. Compatible with dsh 0.1.5-alpha.1+.",
+  "version": "0.1.1",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
@@ -39,6 +39,9 @@
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.2"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.1"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "^4.0.2",
